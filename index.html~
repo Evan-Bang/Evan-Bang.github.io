@@ -2,7 +2,7 @@
 <html lang="en">
 <html>
   <head>
-     <style>
+    <style>
 h1 {text-align: center;}
 p {text-align: center;}
 div {text-align: center;}
@@ -22,17 +22,25 @@ h3 {text-align: center;}
 	<a href="index.html">Home</a> |
       <a href="about.html">About</a> |
       <a href="resume.html">Resume</a> |
-      <a href="secret.html">Portfolio</a> |
+      <a href="portfolio.html">Portfolio</a> |
       <a href="contact.html">Contact</a> </h3>
     </nav>
     </header>
   <body>
-    <h3> <br>
-      <a href="https://drive.google.com/file/d/1Efs5P6-vK8d4Uma9EWH_d5h2_sjzfyLo/view?usp=drive_link"> Engineering for People Design Challenge (Engineers Without Borders) </a></br>
-      <object data="resources\efpdc.pdf" type="application/pdf" width="600" height="300"> </object>
-<br>	<a href="https://drive.google.com/file/d/11DF3-P4uREBIybwF2c_Tp_-2A-1ChZ0e/view?usp=drive_link">Bacteria Incubator Project
-</a> </br>
-<object data="resources\bacproj.png" type="image/png" width="350" height="400"> </object>
-	</h3>	      
+    <p>
+      <object data="resources/Headshot.png" type="image/png" width="300" height="400"> </object>
+    </p>
+    <br>
+    <p style="color:#FF0000">  <span id="datetime"></span></p></br>
+    <script> function updatedatetime(){
+         const now = new Date();
+    const formatteddatetime = now.toLocaleString();
+    document.getElementById('datetime').textContent = formatteddatetime;
+}
+  updatedatetime();
+setInterval(updatedatetime, 1000);
+</script>
   </body>
 </html>
+	
+    
