@@ -1,0 +1,61 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+h1, h2, p, div {
+  margin-top: 0;
+}
+
+
+@keyframes hor-movement {
+  from {
+    left: 0%;
+  }
+  to {
+    left:calc(100% - 311px);
+  }
+}
+
+@keyframes ver-movement {
+  from {
+    top: 0%;
+  }
+  to {
+    top: calc(100% - 368px);
+  }
+}
+@keyframes hue-rotate{
+    from {
+	filter: hue-rotate(0deg)}
+    to {
+	filter: hue-rotate(360deg)}
+}
+@keyframes backcolor {
+    0%{background-color: red;}
+    14.2857142857%{background-color: orange;}
+    28.5714285714%{background-color: yellow;}
+    42.8571428571%{background-color: green;}
+    57.1428571429%{background-color: blue;}
+    71.4285714286%{background-color: indigo;}
+    85.7142857143%{background-color: violet;}
+    100%{background-color: pink;}
+}
+.bounds {
+      width: 100vw;
+      height: 100vh;
+      animation: backcolor 5s infinite linear;
+      position: relative;
+    }	
+.image {
+  animation-name: hor-movement, ver-movement, hue-rotate;
+  animation-duration: 3.141s, 1.414s,3.131s;
+  animation-iteration-count: infinite, infinite, infinite;
+  animation-direction: alternate, alternate, alternate;
+  animation-timing-function: linear, linear, linear;
+  position: absolute;
+  width: 311px;
+  height: 368px;
+  filter: hue-rotate(0deg);
+}
