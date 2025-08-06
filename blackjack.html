@@ -54,7 +54,7 @@ h3 {text-align: center;}
 	      let opptotal =  oppgameplay(0);
 	      if (total > 21) {
 		  win = false; }
-	     else if (opptotal > 21 || opptotal > total) {
+	     else if (opptotal < 21 || opptotal > total) {
 		  win = false;
 	      }
 	      else if (total > opptotal) {
