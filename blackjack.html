@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<html>
+  <head>
+     <style>
+h1 {text-align: center;}
+p {text-align: center;}
+div {text-align: center;}
+h2 {text-align: center;}
+h3 {text-align: center;}
+</style>
+    <meta charset="UTF-8">
+     <meta name="viewport"
+	  content="width=device-width,initial-scale=1">
+    <meta name="description" content="Computer Engineering with Temple University Student Evan Bang">
+    <title>Evan Bang</title>
+  </head>
+  <header>
+     <h1><u>Evan Bang</u></h1>
+    <nav id="horizontal">
+      <h2>Links</h2> <h3>
+	<a href="index.html">Home</a> |
+      <a href="about.html">About</a> |
+      <a href="resume.html">Resume</a> |
+      <a href="portfolio.html">Portfolio</a> |
+      <a href="contact.html">Contact</a> </h3>
+    </nav>
+    </header>
+  <body>
+    <h3><button onclick="playblackjack()">Play Blackjack</button></h3>
+    <h2 id="chips"></h2>
+    <p id="playedcards">Total: 0</p>
+    <script>
+      let win = false;
+      function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+      }
+      if (localStorage.getItem("chips") === null) {
+	  localStorage.setItem("chips","100");
+      }
+      let chips = parseInt(localStorage.getItem("chips"), 10);
+      document.getElementById("chips").innerHTML="<h2>Chips:"+chips+"</h2>";
+      var cards = [2,3,4,5,6,7,8,9,10,10,10,10,"ace"];
+      function playblackjack() {
+
+	  let chips= parseInt(localStorage.getItem("chips"),10);
+	  let betchips = parseInt(prompt("How many chips do you want to bet?"),10);
+	  if (isNaN(betchips)||betchips <= 0 || betchips > chips) {
+	      alert("Try again");
+	      return
+	  }
+	  else {
+	     let total =  gameplay(0);
+	      let opptotal =  oppgameplay(0);
+	      if (total > 21) {
+		  win = false; }
+	     else if (opptotal > 21 || opptotal > total) {
+		  win = false;
+	      }
+	      else if (total > opptotal) {
+		  win = true;
+	      }
+	      else {
+		  win = 2;
+	      }
+	      if (win === true) {
+		  alert("You win!");
+		  chips += betchips;
+	      }
+	      else if (win === false) {
+		  alert("You Lose!");
+		  chips -= betchips;
+	      }
+	      else if (win === 2) {
+		  alert("It's a tie");
+	      }
+	      if (win === true) {
+
+		  
+	  }
+	  }
+	  localStorage.setItem("chips", chips.toString());
+document.getElementById("chips").innerHTML = "<h2>Chips: " + chips + "</h2>";
+      }
+      function gameplay(currenttotal) {
+	  let playedcards = currenttotal;
+	  let hit = true;
+	      while (playedcards < 21 && hit===true){
+		  hit = confirm("Hit?");
+		  if (hit) {
+		      let index = getRandomInt(cards.length);
+		      let playedcard = cards[index];
+		      playedcards += logic(playedcard, playedcards);
+		      alert("Total: " + playedcards);
+		      document.getElementById("playedcards").innerHTML = "Total: " + playedcards;
+		      if (playedcards >= 21) {
+			  alert("Bust!");
+			  win = false;
+			  
+
+	      }
+	      }
+	      }
+	  return playedcards;
+      }
+	  
+       function oppgameplay(currenttotal) {
+	  let playedcards = currenttotal;
+	  let hit = true;
+	      while (playedcards < 17 && hit===true){
+		  
+		  if (hit) {
+		      let index = getRandomInt(cards.length);
+		      let playedcard = cards[index];
+		      playedcards += logic(playedcard, playedcards);
+		  }
+	      }
+	   alert("Computer Total: " + playedcards);
+	   if (playedcards >= 21) {
+	       win = true;
+	   }
+	   return playedcards;
+       }
+     function logic(playedcard, currentTotal) {
+  if (playedcard === "ace") {
+    return currentTotal + 11 > 21 ? 1 : 11;
+  } else {
+    return playedcard;
+  }
+}
+
+      </script>
+  </body>
+</html>
+

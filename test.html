@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple Blackjack</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      text-align: center;
+      background: #f5f5f5;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 { margin-bottom: 0.2rem; }
+    #chips, #status { margin: 0.5rem 0; }
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .hand {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+    .small {
+      font-size: 0.8rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Browser Blackjack</h1>
+  <div id="chips">Chips: 0</div>
+  <div class="hand" id="player-hand">Player: -</div>
+  <div class="hand" id="dealer-hand">Dealer: -</div>
+  <div id="status" class="small">Place a bet and play.</div>
+  <button id="play-btn">Play Blackjack</button>
+
+  <script>
+    // Utility
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    // Card setup
+    const cards = [2,3,4,5,6,7,8,9,10,10,10,10,"ace"];
+
+    // Value logic (ace = 11 or 1)
+    function valueOf(card, total) {
+      if (card === "ace") {
+        return (total + 11) <= 21 ? 11 : 1;
+      }
+      return card;
+    }
+
+    // Chip storage
+    if (localStorage.getItem("chips") === null) {
+      localStorage.setItem("chips", "100");
+    }
+
+    function getChips() {
+      return parseInt(localStorage.getItem("chips"), 10);
+    }
+
+    function setChips(n) {
+      localStorage.setItem("chips", n);
+    }
+
+    function updateChipDisplay() {
+      document.getElementById("chips").textContent = "Chips: " + getChips();
+    }
+
+    // Gameplay for one hand (returns object)
+    function gameplay(currentTotal, displayElement) {
+      let total = currentTotal;
+      const drawn = [];
+
+      while (total <= 21) {
+        const hit = confirm("Hit?");
+        if (!hit) break;
+
+        const index = getRandomInt(cards.length);
+        const card = cards[index];
+        drawn.push(card);
+        total += valueOf(card, total);
+
+        // live update if an element is provided
+        if (displayElement) {
+          displayElement.textContent = `Player: ${drawn.join(", ")} | Total: ${total}`;
+        } else {
+          console.log("Player drew:", card, "Total:", total);
+        }
+
+        if (total > 21) {
+          alert("Bust! Total: " + total);
+          return { total, busted: true, cards: drawn };
+        }
+      }
+
+      alert("Stand with: " + total);
+      return { total, busted: false, cards: drawn };
+    }
+
+    // Dealer logic: draw until 17 or higher (simple)
+    function dealerPlay() {
+      let total = 0;
+      const drawn = [];
+      while (total < 17) {
+        const index = getRandomInt(cards.length);
+        const card = cards[index];
+        drawn.push(card);
+        total += valueOf(card, total);
+      }
+      return { total, busted: total > 21, cards: drawn };
+    }
+
+    // Main
+    function playblackjack() {
+      const playBtn = document.getElementById("play-btn");
+      playBtn.disabled = true; // prevent reentry
+      document.getElementById("status").textContent = "Playing...";
+
+      let chips = getChips();
+      const betchips = parseInt(prompt("How many chips do you want to bet?"), 10);
+      if (isNaN(betchips) || betchips <= 0 || betchips > chips) {
+        alert("Invalid bet. Try again.");
+        playBtn.disabled = false;
+        document.getElementById("status").textContent = "Place a bet and play.";
+        return;
+      }
+
+      // Player hand
+      const playerHandEl = document.getElementById("player-hand");
+      playerHandEl.textContent = "Player: -";
+      const playerResult = gameplay(0, playerHandEl);
+
+      // Immediate loss if busted
+      if (playerResult.busted) {
+        chips -= betchips;
+        setChips(chips);
+        updateChipDisplay();
+        document.getElementById("dealer-hand").textContent = "Dealer: -";
+        document.getElementById("status").textContent = "You busted. Lost bet.";
+        alert("You lost your bet of " + betchips + " chips.");
+        playBtn.disabled = false;
+        return;
+      }
+
+      // Dealer plays
+      const dealerResult = dealerPlay();
+      document.getElementById("dealer-hand").textContent =
+        `Dealer: ${dealerResult.cards.join(", ")} | Total: ${dealerResult.total}`;
+      alert("Dealer total: " + dealerResult.total);
+
+      // Determine outcome
+      if (dealerResult.busted || playerResult.total > dealerResult.total) {
+        // Player wins 1:1
+        chips += betchips;
+        setChips(chips);
+        updateChipDisplay();
+        document.getElementById("status").textContent = "You win!";
+        alert("You win! Gained " + betchips + " chips.");
+      } else if (playerResult.total === dealerResult.total) {
+        // Push
+        document.getElementById("status").textContent = "Push. Bet returned.";
+        alert("Push. Bet returned.");
+      } else {
+        // Dealer wins
+        chips -= betchips;
+        setChips(chips);
+        updateChipDisplay();
+        document.getElementById("status").textContent = "You lose.";
+        alert("You lose. Lost " + betchips + " chips.");
+      }
+
+      playBtn.disabled = false;
+    }
+
+    // Hook up button
+    document.getElementById("play-btn").addEventListener("click", playblackjack);
+
+    // Initial render
+    updateChipDisplay();
+  </script>
+</body>
+</html>
