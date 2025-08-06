@@ -57,6 +57,10 @@ h3 {text-align: center;}
 	       else if (opptotal > 21) {
 		  win = true;
 		  }
+		  else if (total > opptotal)
+		  {
+		  win = true;
+		  }
 	     else if (opptotal < 21 || opptotal > total) {
 		  win = false;
 		  }
@@ -101,7 +105,7 @@ document.getElementById("chips").innerHTML = "<h2>Chips: " + chips + "</h2>";
 		      playedcards += logic(playedcard, playedcards);
 		      alert("Total: " + playedcards);
 		      document.getElementById("playedcards").innerHTML = "Total: " + playedcards;
-		      if (playedcards >= 21) {
+		      if (playedcards > 21) {
 			  alert("Bust!");
 			  win = false;
 			  
@@ -124,7 +128,7 @@ document.getElementById("chips").innerHTML = "<h2>Chips: " + chips + "</h2>";
 		  }
 	      }
 	   alert("Computer Total: " + playedcards);
-	   if (playedcards >= 21) {
+	   if (playedcards > 21) {
 	       win = true;
 	   }
 	   return playedcards;
